@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class File extends Model
 {
-    protected $fillable = ['name', 'path', 'owner_id'];
+    public $incrementing = false;
+
+    protected $fillable = ['id', 'name', 'path', 'owner_id'];
+
+    protected $keyType = 'string';
 
     public function owner(): BelongsTo
     {
@@ -21,7 +25,7 @@ class File extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function accesses()
+    public function accesses(): array
     {
         $result = [
             [

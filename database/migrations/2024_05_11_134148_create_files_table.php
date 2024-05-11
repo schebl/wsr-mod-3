@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->id();
+            $table->char('id', 10)->primary();
             $table->string('name');
             $table->string('path');
             $table->foreignIdFor(\App\Models\User::class, 'owner_id');

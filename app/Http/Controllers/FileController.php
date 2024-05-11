@@ -61,6 +61,7 @@ class FileController extends Controller
             $path = $file->store('public');
 
             $file = File::create([
+                'id' => Str::random(10),
                 'name' => $name,
                 'path' => $path,
                 'owner_id' => $request->user()->id,

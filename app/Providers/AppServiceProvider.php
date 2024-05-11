@@ -25,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('update-file', function (User $user, File $file) {
             return $user->id === $file->owner_id;
         });
+
+        Gate::define('access-file', function (User $user, File $file) {
+            return $user->id === $file->owner_id || $user->accesses->contains($file);
+        });
     }
 }

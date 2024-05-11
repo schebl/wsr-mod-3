@@ -5,12 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class FileController extends Controller
 {
-    public function index(Request $request) {}
+    public function index(Request $request)
+    {
+        $response = [];
+
+        foreach ($request->user()->files as $file) {
+            $response[] = [
+                'file_id' => $file->id,
+                'name' => 'Имя файла',
+                'url' => url('/files/' . $file->id),
+                'accesses' => $file->accesses(),
+            ];
+        }
+
+        return response()->json($response);
+    }
 
     public function store(Request $request)
     {
@@ -88,7 +103,10 @@ class FileController extends Controller
         ]);
     }
 
-    public function download(File $file) {
+    public function download(File $file)
+    {
+        Gate::authorize('access-file', $file);
 
+        return Storage::download($file->path);
     }
 }

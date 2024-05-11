@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -59,9 +60,35 @@ class FileController extends Controller
         return response()->json($response);
     }
 
-    public function update(File $file, Request $request) {}
+    public function update(File $file, Request $request)
+    {
+        Gate::authorize('update-file', $file);
 
-    public function destroy(File $file) {}
+        $validated = $request->validate([
+            'name' => ['required', 'unique:files,name'],
+        ]);
 
-    public function download(File $file) {}
+        $file->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Renamed',
+        ]);
+    }
+
+    public function destroy(File $file)
+    {
+        Gate::authorize('update-file', $file);
+
+        $file->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File already deleted',
+        ]);
+    }
+
+    public function download(File $file) {
+
+    }
 }

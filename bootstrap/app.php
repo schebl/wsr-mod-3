@@ -21,6 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 403);
         });
 
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
+            return response()->json([
+                'message' => 'Forbidden for you',
+            ], 403);
+        });
+
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
             return response()->json([
                 'message' => 'Not found',

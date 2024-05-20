@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('path');
             $table->foreignIdFor(\App\Models\User::class, 'owner_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

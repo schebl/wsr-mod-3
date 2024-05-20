@@ -18,7 +18,7 @@ class FileController extends Controller
         foreach ($request->user()->files as $file) {
             $response[] = [
                 'file_id' => $file->id,
-                'name' => 'Имя файла',
+                'name' => $file->name,
                 'url' => url('/files/' . $file->id),
                 'accesses' => $file->accesses(),
             ];
@@ -51,9 +51,8 @@ class FileController extends Controller
 
             // Замена одинаковых имён
             $original_name = $name;
-            $files = $request->user()->files();
             for ($i = 1;
-                 $files->where('name', $name)->exists();
+                 $request->user()->files()->where('name', $name)->exists();
                  $i++) {
                 $name = Str::of($original_name)->beforeLast('.') . " ($i)." . $file->getClientOriginalExtension();
             }
@@ -98,6 +97,8 @@ class FileController extends Controller
     public function destroy(File $file)
     {
         Gate::authorize('update-file', $file);
+
+        Storage::delete($file->path);
 
         $file->delete();
 
